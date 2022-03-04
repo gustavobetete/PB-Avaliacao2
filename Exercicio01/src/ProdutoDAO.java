@@ -43,6 +43,24 @@ public class ProdutoDAO {
 
         con.close();
     }
+    public void remocao() throws SQLException{
+        ConnectionFactory factory = new ConnectionFactory();
+        Connection con = factory.getConnection();
 
+        PreparedStatement stm = con.prepareStatement("DELETE FROM PRODUTO WHERE ID = ?");
+        stm.setInt(1, 2);
+        stm.execute();
+
+        Integer linhasModificadas = stm.getUpdateCount();
+
+    }
+    public void atualizar() throws SQLException{
+        ConnectionFactory factory = new ConnectionFactory();
+        Connection con = factory.getConnection();
+
+        PreparedStatement stm = con.prepareStatement("UPDATE PRODUTO SET NOME = 'Gabinete', DESCRICAO = 'Gabinete GAMER', QUANTIDADE = 26, PRECO = 999.99 WHERE ID = ?");
+        stm.setInt(1, 1);
+        stm.execute();
+    }
 }
 
