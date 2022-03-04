@@ -45,36 +45,71 @@ public class FilmeDAO {
         stm.execute("INSERT INTO FILME (NOME, DESCRICAO, ANO) VALUES ('Nosferatu', 'Terror', 1922)");
 
     }
+    public void construcaoDePaginacao(int qtdFilmesPorPagina, int paginaAcessada) throws SQLException {
 
+        inserir();
+        int qtdFilmes = 20;
 
-    public void listar() throws SQLException{
-        
+        double qtdPaginas = Math.ceil(qtdFilmes / (float)qtdFilmesPorPagina);
+
+        listar(qtdFilmesPorPagina, paginaAcessada, (int) qtdPaginas);
+    }
+
+    public void listar(int qtdFilmesPorPagina, int paginaAcessada, int qtdDePaginasDisponiveis) throws SQLException{
+
+        int contador = 1;
         int inicio = 0;
         int fim = 0;
-        try(PreparedStatement ps = con.prepareStatement("SELECT * FROM FILME LIMIT ?, ?")){
-            ps.setInt(1, inicio);
-            ps.setInt(2, fim);
-            ps.execute();
 
-            try(ResultSet rst = ps.getResultSet()){
+        // Caso o usuario digite uma pagina que não existe, aparecerá um erro informando que a pagina não existe!
+        if(qtdFilmesPorPagina < 1 || qtdFilmesPorPagina >20){
+            System.out.println("-----------------------------------*----------------------------------");
+            System.out.println("A quantidade de filmes disponivel é 20! Digite um numero de 1 a 20.");
+            System.out.println("-----------------------------------*----------------------------------");
+        }else {
+            if(paginaAcessada < 1 || paginaAcessada > qtdDePaginasDisponiveis){
+                System.out.println("Página não existente! ");
+                System.out.println("páginas possíveis para ser acessada: " + qtdDePaginasDisponiveis + ". Pagina acessada: "+ paginaAcessada + ".");
+                System.out.println("Você não passou uma pagina valida! Por favor insira novamente uma pagina valida!!! \n");
+            }else{
+                System.out.println("*----*----*");
+                System.out.println("Página: " + paginaAcessada + "/" + qtdDePaginasDisponiveis);
+                System.out.println("*----*----*");
+                while(contador <= qtdDePaginasDisponiveis) {
 
-                while(rst.next()){
-                    System.out.println("------------*------------");
-                    Integer id = rst.getInt("ID");
-                    System.out.println("id: " + id);
-                    String nome = rst.getString("NOME");
-                    System.out.println("Nome: " + nome);
-                    String descricao = rst.getString("DESCRICAO");
-                    System.out.println("Descrição: "+descricao);
-                    int ano = rst.getInt("ANO");
-                    System.out.println("Ano: " +ano);
-                    System.out.println("------------*------------");
+                    if(paginaAcessada == contador){
+
+                        inicio = ((qtdFilmesPorPagina * contador) - qtdFilmesPorPagina);
+                        fim = qtdFilmesPorPagina;
+                        break;
+                    }
+
+                    contador++;
+                }
+        }
+            try(PreparedStatement ps = con.prepareStatement("SELECT * FROM FILME LIMIT ?, ?")){
+                ps.setInt(1, inicio);
+                ps.setInt(2, fim);
+                ps.execute();
+
+                try(ResultSet rst = ps.getResultSet()){
+
+                    while(rst.next()){
+                        System.out.println("------------*------------");
+                        Integer id = rst.getInt("ID");
+                        System.out.println("id: " + id);
+                        String nome = rst.getString("NOME");
+                        System.out.println("Nome: " + nome);
+                        String descricao = rst.getString("DESCRICAO");
+                        System.out.println("Descrição: "+descricao);
+                        int ano = rst.getInt("ANO");
+                        System.out.println("Ano: " +ano);
+                        System.out.println("------------*------------");
+                    }
                 }
             }
         }
-
     }
 
+
 }
-
-

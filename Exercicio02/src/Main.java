@@ -6,7 +6,16 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         FilmeDAO fd = new FilmeDAO();
 
-        fd.inserir();
-        fd.listar();
+        Integer qtdDeFilmes = null;
+        Integer paginaAcessada = null;
+
+        System.out.println("Digite a quantidade de filmes por pagina: ");
+        qtdDeFilmes = sc.nextInt();
+
+        System.out.println("Digite a pagina a ser acessada: ");
+        paginaAcessada = sc.nextInt();
+
+        fd.construcaoDePaginacao(qtdDeFilmes, paginaAcessada);
+
     }
 }
